@@ -35,21 +35,21 @@ def find_and_click_image(image_path, threshold=0.8):
         print(f"Image '{image_path}' not found on the screen.")
         return False
 
-# Automatically find all PNG files in the same directory as the script
-def find_png_files_in_script_directory():
+# Automatically find all JPG/JPEG files in the same directory as the script
+def find_jpeg_files_in_script_directory():
     # Get the current working directory (where the script is located)
     current_directory = os.path.dirname(os.path.abspath(__file__))
     
-    # List all PNG files in the current directory
-    return [f for f in os.listdir(current_directory) if f.endswith('.png')]
+    # List all JPG/JPEG files in the current directory
+    return [f for f in os.listdir(current_directory) if f.endswith('.jpg') or f.endswith('.jpeg')]
 
-# Get all PNG files in the same directory as the script
-png_files = find_png_files_in_script_directory()
+# Get all JPG/JPEG files in the same directory as the script
+jpeg_files = find_jpeg_files_in_script_directory()
 
 # Loop to check and click images every 5 seconds
 while True:
-    for png_file in png_files:
-        image_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), png_file)
+    for jpeg_file in jpeg_files:
+        image_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), jpeg_file)
         find_and_click_image(image_path)
 
     # Wait for 5 seconds before repeating
