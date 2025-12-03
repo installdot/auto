@@ -80,10 +80,17 @@
                             <div class="col-12">
                                 <small class="text-secondary">Full 1-65535 TCP sweep with live status. Stop anytime.</small>
                             </div>
+                            <div class="col-12">
+                                <div class="progress" style="height: 10px;">
+                                    <div id="scan-progress-bar" class="progress-bar bg-info" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <small class="text-secondary" id="scan-progress-text">Idle</small>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
+
         </div>
 
         <div class="card shadow-sm mt-4">
@@ -194,14 +201,28 @@
                 if (data.error) {
                     $('#log').text(`Error: ${data.error}`);
                 } else {
-                    $('#log').text(`Status: ${stats.status || 'Idle'}\n` +
-                        `Running: ${data.running}\n` +
-                        `Mode: ${data.mode || 'n/a'}\n` +
-                        `Total Packets: ${stats.totalPackets || 0}`);
+                    const lines = [
+                        `Status: ${stats.status || 'Idle'}`,
+                        `Running: ${data.running}`,
+                        `Mode: ${data.mode || 'n/a'}`,
+                        `Total Packets: ${stats.totalPackets || 0}`,
+                    ];
+
+                    if (data.mode === 'scan') {
+                        const percent = scan.total ? ((scan.scanned || 0) / scan.total * 100).toFixed(2) : '0.00';
+                        lines.push(`Scan host: ${scan.host || '-'}`);
+                        lines.push(`Scan progress: ${scan.scanned || 0} / ${scan.total || 0} (${percent}%)`);
+                        lines.push(`Servers found: ${(scan.found || []).length}`);
+                    }
+
+                    $('#log').text(lines.join('\n'));
                 }
 
                 const progress = `${scan.scanned || 0} / ${scan.total || 0}`;
                 $('#scan-progress').text(progress);
+                const percent = scan.total ? Math.min(100, ((scan.scanned || 0) / scan.total) * 100) : 0;
+                $('#scan-progress-bar').css('width', `${percent}%`);
+                $('#scan-progress-text').text(scan.total ? `${scan.host || '-'} • ${progress} (${percent.toFixed(2)}%)` : 'Idle');
                 renderServers(scan.found);
             });
         }
