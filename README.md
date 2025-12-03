@@ -27,3 +27,21 @@ firebase emulators:start --only hosting --host 0.0.0.0 --port 5000
 # optional terminal 3: tunnel the emulator or the Go app directly
 ngrok http 8080  # or: ngrok http 5000
 ```
+
+### Resolving merge conflicts
+
+If you pulled upstream changes and Git reports conflicts in `README.md` or `main.go`, resolve them locally before pushing:
+
+```bash
+# see what changed
+git status
+
+# open the files and clean up <<<<<<, ======, >>>>>> markers
+$EDITOR README.md main.go
+
+# format Go after resolving
+gofmt -w main.go
+
+git add README.md main.go
+git commit -m "Resolve merge conflicts"
+```
